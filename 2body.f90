@@ -11,8 +11,8 @@ PROGRAM MAIN
         ! (8) Z-velocity
     !
 
-    REAL*16 Electron(8) , Proton(8) , dT , G , k , r , Fe , Fg , dx , dy , dz
-    INTEGER T , count , n
+    REAL*16 Electron(8) , Proton(8) , dT , G , k , r , Fe , Fg , dx , dy , dz , T
+    INTEGER*8 count , n
 
     G = 6.6743E-11
     k = 8.987551782E9
@@ -39,14 +39,15 @@ PROGRAM MAIN
     Proton(4) = 0
     Proton(5) = 0
 
-    T = 1E+0
-    dT = 1E-6
+    T = 1E-4
+    dT = 1E-9
 
     n = T/dT
 
     OPEN( unit = 1 , file = "data.csv" )
+    OPEN( unit = 2 , file = "data2.csv" )
 
-    DO count = 0 , n
+    DO count = 1 , n
 
         WRITE( 1 , * ) Electron(3) , Electron(4) , Electron(5) , Proton(3) , Proton(4) , Proton(5)
 
@@ -58,6 +59,8 @@ PROGRAM MAIN
 
         Fe = k * Electron(2) * Proton(2) / r**2
         Fg = -G * Electron(1) * Proton(1) / r**2
+
+        WRITE( 2 , * ) Fe , Fg
 
         Electron(3) = Electron(3) + Electron(6) * dT + cos(atan2(sqrt(dy**2+dz**2),dx)) * ( Fe + Fg ) * dT**2 / Electron(1) / 2
         Electron(4) = Electron(4) + Electron(7) * dT + cos(atan2(sqrt(dx**2+dz**2),dy)) * ( Fe + Fg ) * dT**2 / Electron(1) / 2
